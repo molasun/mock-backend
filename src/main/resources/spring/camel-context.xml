@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="        http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd        http://camel.apache.org/schema/spring       https://camel.apache.org/schema/spring/camel-spring.xsd">
+	<camelContext id="camel"
+		xmlns="http://camel.apache.org/schema/spring">
+		<restConfiguration bindingMode="auto"
+			component="jetty" host="localhost" port="8082" />
+		<rest consumes="application/json; charset=utf-8" id="hcRest"
+			produces="application/json; charset=utf-8">
+			<post id="hc-post" uri="/hctest">
+				<to id="direct to direct:hcRestPost" uri="direct:hcRestPost" />
+			</post>
+			<post id="backend-post" uri="/toBackend">
+				<to id="direct to direct:toBackend" uri="direct:toBackend" />
+			</post>
+		</rest>
+		<route id="health-check-route">
+			<from id="health-check" uri="direct:hcRestPost" />
+			<log id="health-check-log" message=">>> ${body}" />
+			<setBody id="route-setBody">
+				<simple>{ "status" : "OK" }</simple>
+			</setBody>
+		</route>
+		<route id="backend-route">
+			<from id="to-backend" uri="direct:toBackend" />
+			<log id="to-backend-log" message=">>> ${body}" />
+		</route>
+	</camelContext>
+</beans>
