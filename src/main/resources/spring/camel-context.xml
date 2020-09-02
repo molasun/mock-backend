@@ -5,7 +5,9 @@
 	<camelContext id="camel"
 		xmlns="http://camel.apache.org/schema/spring">
 		<restConfiguration bindingMode="auto"
-			component="jetty" host="localhost" port="8082" />
+			component="jetty" host="mock-backend-demo.apps.poc.ocp4.com" port="8082" />
+		<!--  <restConfiguration bindingMode="auto"
+			component="jetty" host="localhost" port="8082" />-->
 		<rest consumes="application/json; charset=utf-8" id="hcRest"
 			produces="application/json; charset=utf-8">
 			<post id="hc-post" uri="/hctest">
